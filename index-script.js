@@ -46,7 +46,16 @@ function handleSubmit(event) {
         .then((data) => {
           // Handle the API response here if needed
           console.log(data);
-          Swal.fire('Success!', 'Data have been save.', 'success');
+          Swal.fire({
+            title: 'Success',
+            icon: 'success',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'ok',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = 'information.html';
+            }
+          });
         })
         .catch((error) => {
           console.error('Error submitting the form:', error);
