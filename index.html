@@ -42,7 +42,7 @@
       </div>
       <div class="input-container ic2">
         <input id="section" class="input" type="text" placeholder=" " />
-        <div class="cut cut-short"></div>
+        <div class="cut"></div>
         <label for="section" class="placeholder">Section</label>
       </div>
       <button type="text" class="submit">submit</button>
@@ -125,16 +125,21 @@
             didOpen: () => {
               Swal.showLoading();
 
+              console.log(JSON.stringify(formData));
+
               // Make the API request
-              fetch('https://enrfx5ls5s76.x.pipedream.net', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-              })
+              fetch(
+                // 'https://enrfx5ls5s76.x.pipedream.net/',
+                'https://script.google.com/macros/s/AKfycbwWGFWqYC8R0dYc-HgrAXK6YgWdBLyMMrLJD02GJAhdGJDm6rluK_ie5SqzLY1YnTTJbw/exec',
+                {
+                  method: 'POST',
+                  body: JSON.stringify(formData),
+                }
+              )
                 .then((response) => response.json())
                 .then((data) => {
+                  console.log(data);
+
                   // Handle the API response here if needed
 
                   Swal.fire({
