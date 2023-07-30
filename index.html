@@ -24,7 +24,7 @@
         title="profile-image"
       />
       <div class="title">Welcome</div>
-      <div class="subtitle">[LINE NAME]</div>
+      <div id="displayName" class="subtitle"></div>
       <div class="input-container ic1">
         <input id="firstname" class="input" type="text" placeholder=" " />
         <div class="cut"></div>
@@ -49,6 +49,120 @@
     </div>
   </body>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="./index-script.js"></script>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script>
+    var user_profiles = {};
+
+    function runApp() {
+      liff
+        .getProfile()
+        .then((profile) => {
+          console.log(profile);
+          document.getElementById('pictureUrl').src = profile.pictureUrl;
+          document.getElementById('displayName').innerHTML =
+            profile.displayName;
+
+          user_profiles = profile;
+        })
+        .catch((err) => console.error(err));
+    }
+    liff.init(
+      { liffId: '2000217484-zay0pjQy' },
+      () => {
+        if (liff.isLoggedIn()) {
+          runApp();
+        } else {
+          liff.login();
+        }
+      },
+      (err) => console.error(err.code, error.message)
+    );
+
+    function handleSubmit(event) {
+      event.preventDefault(); // Prevent the form from submitting through the traditional way
+
+      // Get form data
+      const formData = {
+        firstName: document.getElementById('firstname').value,
+        lastName: document.getElementById('lastname').value,
+        email: document.getElementById('email').value,
+        section: document.getElementById('section').value,
+        userId: user_profiles.userId,
+        displayName: user_profiles.displayName,
+        pictureUrl: user_profiles.pictureUrl,
+      };
+
+      // Basic form validation (you can add more specific validations)
+      if (
+        !formData.firstName ||
+        !formData.lastName ||
+        !formData.email ||
+        !formData.section
+      ) {
+        Swal.fire(
+          'Oops...?',
+          'Please fill out all the fields before submitting.',
+          'question'
+        );
+        return;
+      }
+
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, submit it!',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: 'Uploading...',
+            html: 'Please wait...',
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+
+              // Make the API request
+              fetch('https://enrfx5ls5s76.x.pipedream.net', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  // Handle the API response here if needed
+
+                  Swal.fire({
+                    title: 'Success',
+                    icon: 'success',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'ok',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      window.location.href = 'information.html';
+                    }
+                  });
+                })
+                .catch((error) => {
+                  console.error('Error submitting the form:', error);
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'An error occurred while submitting the form. Please try again later.',
+                  });
+                });
+            },
+          });
+        }
+      });
+    }
+
+    // Add event listener to the submit button
+    document.querySelector('.submit').addEventListener('click', handleSubmit);
+  </script>
 </html>
