@@ -16,25 +16,68 @@
   </head>
   <body>
     <div class="form">
+      <div class="title">[LINE NAME]</div>
+      <div class="subtitle">[UID]</div>
       <img
         id="pictureUrl"
         width="40%"
-        style="border-radius: 50%"
+        style="border-radius: 50%; margin-top: 10px"
         src="https://placehold.co/600x600"
         title="profile-image"
       />
-      <div class="title">[LINE NAME]</div>
-      <div class="subtitle">[UID]</div>
       <div style="text-align: start">
-        <div class="subtitle">[First name]</div>
-        <div class="subtitle">[Last name]</div>
-        <div class="subtitle">[Email]</div>
-        <div class="subtitle">[Section]</div>
+        <div class="subtitle">Name: [First name] [Last name]</div>
+        <div class="subtitle">Email: [Email]</div>
+        <div class="subtitle">Section: [Section]</div>
       </div>
-      <button type="text" class="submit">checked</button>
-      <button type="text" class="submit">close</button>
-      <button type="text" class="submit">close</button>
+      <div class="row">
+        <div><button class="checked">Checked</button></div>
+        <div><button class="cancel">Close</button></div>
+      </div>
+      <div class="subtitle" style="margin-top: 20px">Record Data</div>
+      <table id="dynamic-table" style="margin-top: 20px">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Note</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Table rows will be added dynamically using JavaScript -->
+          <script>
+            // Sample JSON data
+            const jsonData = [
+              { name: 'John Doe', age: 30, country: 'USA' },
+              { name: 'Jane Smith', age: 25, country: 'Canada' },
+              { name: 'Michael Johnson', age: 28, country: 'UK' },
+              { name: 'Emily Brown', age: 22, country: 'Australia' },
+            ];
+
+            function createTableRows(data) {
+              const tableBody = document.querySelector('#dynamic-table tbody');
+
+              data.forEach((person) => {
+                const row = tableBody.insertRow();
+
+                const nameCell = row.insertCell();
+                const ageCell = row.insertCell();
+                const countryCell = row.insertCell();
+
+                nameCell.textContent = person.name;
+                ageCell.textContent = person.age;
+                countryCell.textContent = person.country;
+              });
+            }
+
+            // Fetch JSON data (Replace with your actual JSON endpoint or data)
+            // In this example, we'll use the sample JSON data directly.
+            createTableRows(jsonData);
+          </script>
+        </tbody>
+      </table>
     </div>
   </body>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </html>

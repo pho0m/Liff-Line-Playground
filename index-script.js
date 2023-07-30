@@ -1,4 +1,16 @@
 function handleSubmit(event) {
+  liff.init(
+    { liffId: '1234567890-XXXXXXXXX' },
+    () => {
+      if (liff.isLoggedIn()) {
+        // ขั้นตอน 4.4 รออยู่
+      } else {
+        liff.login();
+      }
+    },
+    (err) => console.error(err.code, error.message)
+  );
+
   event.preventDefault(); // Prevent the form from submitting through the traditional way
 
   // Get form data
@@ -34,37 +46,47 @@ function handleSubmit(event) {
     confirmButtonText: 'Yes, submit it!',
   }).then((result) => {
     if (result.isConfirmed) {
-      // Make the API request
-      fetch('https://enrfx5ls5s76.x.pipedream.net', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      Swal.fire({
+        title: 'Uploading...',
+        html: 'Please wait...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+
+          // Make the API request
+          fetch('https://enrfx5ls5s76.x.pipedream.net', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // Handle the API response here if needed
+              console.log(data);
+              Swal.fire({
+                title: 'Success',
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'ok',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = 'information.html';
+                }
+              });
+            })
+            .catch((error) => {
+              console.error('Error submitting the form:', error);
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'An error occurred while submitting the form. Please try again later.',
+              });
+            });
         },
-        body: JSON.stringify(formData),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          // Handle the API response here if needed
-          console.log(data);
-          Swal.fire({
-            title: 'Success',
-            icon: 'success',
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'ok',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              window.location.href = 'information.html';
-            }
-          });
-        })
-        .catch((error) => {
-          console.error('Error submitting the form:', error);
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'An error occurred while submitting the form. Please try again later.',
-          });
-        });
+      });
     }
   });
 }

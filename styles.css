@@ -163,11 +163,10 @@ body::-webkit-scrollbar {
   border-radius: 12px;
   border: 0;
   box-sizing: border-box;
-  color: #eee;
+  color: rgb(0, 0, 0);
   cursor: pointer;
   font-size: 18px;
   height: 50px;
-  margin-top: 38px;
   text-align: center;
   width: 100%;
 }
@@ -177,11 +176,10 @@ body::-webkit-scrollbar {
   border-radius: 12px;
   border: 0;
   box-sizing: border-box;
-  color: #eee;
+  color: rgb(0, 0, 0);
   cursor: pointer;
   font-size: 18px;
   height: 50px;
-  margin-top: 38px;
   text-align: center;
   width: 100%;
 }
@@ -198,4 +196,58 @@ body::-webkit-scrollbar {
   background-image: url(https://images.unsplash.com/photo-1530305408560-82d13781b33a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1352&q=80);
   background-size: cover;
   background-repeat: no-repeat;
+}
+
+.row {
+  display: flex;
+  margin-top: 20px;
+}
+
+.row:first-child {
+  border-top: 1px solid black;
+}
+
+.row div {
+  width: 50%;
+  padding: 5px;
+}
+
+#dynamic-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#dynamic-table th,
+#dynamic-table td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #dddddd;
+}
+
+#dynamic-table th {
+  background-color: #f2f2f2;
+  color: #333333;
+  font-weight: bold;
+}
+
+#dynamic-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+#dynamic-table tbody tr:hover {
+  background-color: #f0f0f0;
+}
+
+#dynamic-table button {
+  background-color: #e74c3c;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+#dynamic-table button:hover {
+  background-color: #c0392b;
 }
