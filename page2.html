@@ -1,101 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta
       name="viewport"
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"
     />
-    <title>Check-In-Educate</title>
-    <style></style>
+    <title>CheckChue</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://media.discordapp.net/attachments/1125648829862137916/1135189504391647292/Untitled_design_3.png"
+    />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div id="container">
-      <div id="camera">
-        <!-- // ภาพที่ stream จากกล้องจะโผล่ตรงนี้ -->
-        <video id="stream" width="100%" height="450"></video>
-
-        <!-- // สร้างปุ่มถ่ายรูปบน video -->
-        <div>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+    <div class="form">
+      <img
+        id="pictureUrl"
+        width="40%"
+        style="border-radius: 50%"
+        src="https://placehold.co/600x400"
+        title="profile-image"
+      />
+      <div class="title">Welcome</div>
+      <div class="subtitle">[LINE NAME]</div>
+      <div class="input-container ic1">
+        <input id="firstname" class="input" type="text" placeholder=" " />
+        <div class="cut"></div>
+        <label for="firstname" class="placeholder">First name</label>
       </div>
-
-      <!-- // เราจะเอาภาพที่กดถ่ายจาก stream มาวาดตรงนี้ -->
-      <canvas id="canvas" width="600" height="450"></canvas>
-
-      <div id="snapshot">
-        <!-- // ที่พรีวิวรูป -->
-        <img
-          src="https://placehold.jp/dddddd/ffffff/600x450.png?text=Preview%20Image"
-          id="img1"
-          width="100%"
-        />
+      <div class="input-container ic2">
+        <input id="lastname" class="input" type="text" placeholder=" " />
+        <div class="cut"></div>
+        <label for="lastname" class="placeholder">Last name</label>
       </div>
-
-      <div class="button-group">
-        <!-- // ปุ่มถ่ายรูป -->
-        <button id="btnStream" type="button" class="button">
-          Take a photo
-        </button>
-
-        <!-- // ปุ่ม browse รูปที่เลือกไฟล์ที่เป็นรูปได้เท่านั้น -->
-        <label id="picture" for="file" class="label custom-file-upload"
-          >Browse an image</label
-        >
-        <input id="file" name="file" type="file" accept="image/*" />
+      <div class="input-container ic2">
+        <input id="email" class="input" type="text" placeholder=" " />
+        <div class="cut cut-short"></div>
+        <label for="email" class="placeholder">Email</label>
       </div>
+      <div class="input-container ic2">
+        <input id="section" class="input" type="text" placeholder=" " />
+        <div class="cut cut-short"></div>
+        <label for="section" class="placeholder">Section</label>
+      </div>
+      <button type="text" class="submit">submit</button>
     </div>
-
-    <img id="pictureUrl" width="25%" />
-    <p id="userId"></p>
-    <p id="displayName"></p>
-    <p id="statusMessage"></p>
-    <p id="getDecodedIDToken"></p>
-    <!-- <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <script>
-      function runApp() {
-        liff
-          .getProfile()
-          .then((profile) => {
-            document.getElementById('pictureUrl').src = profile.pictureUrl;
-            document.getElementById('userId').innerHTML =
-              '<b>UserId:</b> ' + profile.userId;
-            document.getElementById('displayName').innerHTML =
-              '<b>DisplayName:</b> ' + profile.displayName;
-            document.getElementById('statusMessage').innerHTML =
-              '<b>StatusMessage:</b> ' + profile.statusMessage;
-            document.getElementById('getDecodedIDToken').innerHTML =
-              '<b>Email:</b> ' + liff.getDecodedIDToken().email;
-          })
-          .catch((err) => {
-            document.getElementById('pictureUrl').src = profile.pictureUrl;
-            document.getElementById('userId').innerHTML =
-              '<b>UserId:</b> ' + profile.userId;
-            document.getElementById('displayName').innerHTML =
-              '<b>DisplayName:</b> ' + profile.displayName;
-            document.getElementById('statusMessage').innerHTML =
-              '<b>StatusMessage:</b> ' + profile.statusMessage;
-            document.getElementById('getDecodedIDToken').innerHTML =
-              '<b>Email:</b> ' + liff.getDecodedIDToken().email;
-          });
-      }
-      liff.init(
-        { liffId: '2000217484-zay0pjQy' },
-        () => {
-          if (liff.isLoggedIn()) {
-            runApp();
-          } else {
-            liff.login();
-          }
-        },
-        (err) => {
-          runApp();
-          console.error(err.code, error.message);
-        }
-      );
-    </script> -->
   </body>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>

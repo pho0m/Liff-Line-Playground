@@ -1,72 +1,64 @@
-// // Import stylesheets
-// import './styles.css';
+function handleSubmit(event) {
+  event.preventDefault(); // Prevent the form from submitting through the traditional way
 
-// // 0. Import LIFF SDK
-// import liff from '@line/liff';
+  // Get form data
+  const formData = {
+    firstName: document.getElementById('firstname').value,
+    lastName: document.getElementById('lastname').value,
+    email: document.getElementById('email').value,
+    section: document.getElementById('section').value,
+  };
 
-// // Body element
-// const body = document.getElementById('body');
+  // Basic form validation (you can add more specific validations)
+  if (
+    !formData.firstName ||
+    !formData.lastName ||
+    !formData.email ||
+    !formData.section
+  ) {
+    Swal.fire(
+      'Oops...?',
+      'Please fill out all the fields before submitting.',
+      'question'
+    );
+    return;
+  }
 
-// // Profile elements
-// const pictureUrl = document.getElementById('pictureUrl');
-// const userId = document.getElementById('userId');
-// const displayName = document.getElementById('displayName');
-// const statusMessage = document.getElementById('statusMessage');
-// const email = document.getElementById('email');
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, submit it!',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Make the API request
+      fetch('https://enrfx5ls5s76.x.pipedream.net', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Handle the API response here if needed
+          console.log(data);
+          Swal.fire('Success!', 'Data have been save.', 'success');
+        })
+        .catch((error) => {
+          console.error('Error submitting the form:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'An error occurred while submitting the form. Please try again later.',
+          });
+        });
+    }
+  });
+}
 
-// // Button elements
-// const btnShare = document.getElementById('btnShare');
-
-// async function main() {
-//   // 2. liff.ready
-//   liff.ready.then(() => {
-//     if (liff.getOS() === 'android') {
-//       body.style.backgroundColor = '#888888';
-//     }
-//     if (liff.isInClient()) {
-//       getUserProfile();
-//     }
-//     btnShare.style.display = 'block';
-//   });
-//   // 3. Try a LIFF function
-//   // 4. Check where LIFF was opened
-//   // 5. Call getUserProfile()
-//   // 10. Show share button
-
-//   // 1. Initialize LIFF app)
-//   await liff.init({ liffId: '2000217484-zay0pjQy' });
-// }
-// main();
-
-// // 6. Create getUserProfile()
-// // *7. Get email
-// async function getUserProfile() {
-//   const profile = await liff.getProfile();
-//   pictureUrl.src = profile.pictureUrl;
-//   userId.innerHTML = '<b>userId: </b>' + profile.userId;
-//   displayName.innerHTML = '<b>displayName: </b>' + profile.displayName;
-//   statusMessage.innerHTML = '<b>statusMessage: </b>' + profile.statusMessage;
-//   email.innerHTML = '<b>email: </b>' + liff.getDecodedIDToken().email;
-// }
-
-// // *8. Create shareMsg()
-// async function shareMsg() {
-//   const result = await liff.shareTargetPicker([
-//     {
-//       type: 'text',
-//       text: 'This msg was shared by LIFF',
-//     },
-//   ]);
-//   if (result) {
-//     alert('Msg was shared!');
-//   } else {
-//     alert('ShareTargetPicker was cancelled by user');
-//   }
-//   liff.closeWindow();
-// }
-// // 11. Add close window
-
-// // 9. Add event listener to share button
-// btnShare.onclick = () => {
-//   shareMsg();
-// };
+// Add event listener to the submit button
+document.querySelector('.submit').addEventListener('click', handleSubmit);
