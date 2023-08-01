@@ -16,36 +16,29 @@
   </head>
   <body>
     <div class="form">
+      <div class="title" id="displayName">[LINE NAME]</div>
+      <div class="subtitle" id="userId">[UID]</div>
       <img
         id="pictureUrl"
-        width="30%"
-        style="border-radius: 50%"
+        width="40%"
+        style="border-radius: 50%; margin-top: 10px"
         src="https://placehold.co/600x600"
         title="profile-image"
       />
-      <div class="title">Welcome</div>
-      <div id="displayName" class="subtitle"></div>
-      <div class="input-container ic1">
-        <input id="firstname" class="input" type="text" placeholder=" " />
-        <div class="cut"></div>
-        <label for="firstname" class="placeholder">First name</label>
+      <div class="row">
+        <div><button class="checked">Checked</button></div>
+        <div><button class="close">Close</button></div>
       </div>
-      <div class="input-container ic2">
-        <input id="lastname" class="input" type="text" placeholder=" " />
-        <div class="cut"></div>
-        <label for="lastname" class="placeholder">Last name</label>
-      </div>
-      <div class="input-container ic2">
-        <input id="email" class="input" type="text" placeholder=" " />
-        <div class="cut cut-short"></div>
-        <label for="email" class="placeholder">Email</label>
-      </div>
-      <div class="input-container ic2">
-        <input id="section" class="input" type="text" placeholder=" " />
-        <div class="cut"></div>
-        <label for="section" class="placeholder">Section</label>
-      </div>
-      <button type="text" class="submit">submit</button>
+      <div class="subtitle" style="margin-top: 20px">Record Data</div>
+      <table id="dynamic-table" style="margin-top: 20px">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
   </body>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -61,11 +54,26 @@
           document.getElementById('pictureUrl').src = profile.pictureUrl;
           document.getElementById('displayName').innerHTML =
             profile.displayName;
+          document.getElementById('userId').innerHTML = profile.userId;
 
           user_profiles = profile;
+
+          // Fetch JSON data from the API endpoint
+          fetch(
+            `https://script.google.com/macros/s/AKfycbxK8OVbQf8Z8n70bbCx-DKL-OwN-lvuQYbU8Kmi3Bu_xZ6l7V7S8DazF4245NHaZzs3UA/exec?userId=${user_profiles.userId}`
+          ) // Replace with your actual API endpoint
+            .then((response) => response.json())
+            .then((data) => {
+              // Call the function to create table rows with the fetched data
+              createTableRows(data);
+            })
+            .catch((error) => {
+              console.error('Error fetching data:', error);
+            });
         })
         .catch((err) => console.error(err));
     }
+
     liff.init(
       { liffId: '2000217484-zay0pjQy' },
       () => {
@@ -78,96 +86,56 @@
       (err) => console.error(err.code, error.message)
     );
 
-    function handleSubmit(event) {
-      event.preventDefault(); // Prevent the form from submitting through the traditional way
+    function handleCheck(event) {
+      window.location.href = 'check.html';
+    }
 
-      // Get form data
-      const formData = {
-        firstName: document.getElementById('firstname').value,
-        lastName: document.getElementById('lastname').value,
-        email: document.getElementById('email').value,
-        section: document.getElementById('section').value,
-        userId: user_profiles.userId,
-        displayName: user_profiles.displayName,
-        pictureUrl: user_profiles.pictureUrl,
-      };
-
-      // Basic form validation (you can add more specific validations)
-      if (
-        !formData.firstName ||
-        !formData.lastName ||
-        !formData.email ||
-        !formData.section
-      ) {
-        Swal.fire(
-          'Oops...?',
-          'Please fill out all the fields before submitting.',
-          'question'
-        );
-        return;
-      }
-
-      Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, submit it!',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            title: 'Uploading...',
-            html: 'Please wait...',
-            allowEscapeKey: false,
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
-
-              console.log(JSON.stringify(formData));
-
-              // Make the API request
-              fetch(
-                // 'https://enrfx5ls5s76.x.pipedream.net/',
-                'https://script.google.com/macros/s/AKfycbwfFITdKFd2tnt4PWtNKlPxSd7boi2QB2fJ_Im5p_8oKyQ8DvsnIXXxmlvZKDgXncJrDQ/exec',
-                {
-                  method: 'POST',
-                  body: JSON.stringify(formData),
-                }
-              )
-                .then((response) => response.json())
-                .then((data) => {
-                  console.log(data);
-
-                  // Handle the API response here if needed
-
-                  Swal.fire({
-                    title: 'Success',
-                    icon: 'success',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'ok',
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      window.location.href = 'information.html';
-                    }
-                  });
-                })
-                .catch((error) => {
-                  console.error('Error submitting the form:', error);
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'An error occurred while submitting the form. Please try again later.',
-                  });
-                });
-            },
-          });
-        }
-      });
+    function handleClose(event) {
+      liff.close();
     }
 
     // Add event listener to the submit button
-    document.querySelector('.submit').addEventListener('click', handleSubmit);
+    document.querySelector('.checked').addEventListener('click', handleCheck);
+    document.querySelector('.close').addEventListener('click', handleClose);
+
+    // Sample JSON data
+    const jsonData = [
+      { name: 'John Doe', age: 30, country: 'USA' },
+      { name: 'Jane Smith', age: 25, country: 'Canada' },
+      { name: 'Michael Johnson', age: 28, country: 'UK' },
+      { name: 'Emily Brown', age: 22, country: 'Australia' },
+    ];
+
+    // Function to create table row in index page
+    function createTableRows(params) {
+      const tableBody = document.querySelector('#dynamic-table tbody');
+
+      params.user.forEach((data) => {
+        const row = tableBody.insertRow();
+
+        const dateCell = row.insertCell();
+        const descriptionCell = row.insertCell();
+        const convertedDateTime = convertToUTCPlus7(data.timestamp);
+
+        dateCell.textContent = convertedDateTime;
+        descriptionCell.textContent = data.description;
+      });
+    }
+
+    // Function to convert date-time to UTC+7 time zone
+    function convertToUTCPlus7(dateTimeString) {
+      const dateTime = new Date(dateTimeString);
+      const utcOffset = 7 * 60; // UTC+7 is 7 hours ahead of UTC
+      const utcPlus7Time = new Date(dateTime.getTime() + utcOffset * 60000);
+
+      return utcPlus7Time.toLocaleString('en-GB', {
+        timeZone: 'Asia/Bangkok', // Change to the desired time zone, 'Asia/Bangkok' for UTC+7
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    }
   </script>
 </html>

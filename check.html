@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"
+    />
+    <title>CheckChue</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://media.discordapp.net/attachments/1125648829862137916/1135189504391647292/Untitled_design_3.png"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="form">
+      <img
+        id="pictureUrl"
+        width="30%"
+        style="border-radius: 50%"
+        src="https://placehold.co/600x600"
+        title="profile-image"
+      />
+      <div class="title">Welcome</div>
+      <div id="displayName" class="subtitle"></div>
+      <div class="input-container ic1">
+        <input
+          id="firstname"
+          class="input"
+          type="text"
+          placeholder=" "
+          required
+        />
+        <div class="cut"></div>
+        <label for="firstname" class="placeholder">*First name</label>
+      </div>
+      <div class="input-container ic2">
+        <input
+          id="lastname"
+          class="input"
+          type="text"
+          placeholder=" "
+          required
+        />
+        <div class="cut"></div>
+        <label for="lastname" class="placeholder">*Last name</label>
+      </div>
+      <div class="input-container ic2">
+        <input id="email" class="input" type="text" placeholder=" " required />
+        <div class="cut cut-short"></div>
+        <label for="email" class="placeholder">*Email</label>
+      </div>
+      <div class="input-container ic2">
+        <input
+          id="section"
+          class="input"
+          type="text"
+          placeholder=" "
+          required
+        />
+        <div class="cut"></div>
+        <label for="section" class="placeholder">*Section</label>
+      </div>
+      <div class="input-container ic2" style="padding-bottom: 80px">
+        <textarea
+          id="description"
+          class="input"
+          type="text"
+          placeholder=" "
+          style="height: 100px"
+        ></textarea>
+        <div class="cut"></div>
+        <label for="section" class="placeholder">Description</label>
+      </div>
+
+      <button type="text" class="submit">submit</button>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script>
+    var user_profiles = {};
+
+    function runApp() {
+      liff
+        .getProfile()
+        .then((profile) => {
+          console.log(profile);
+          document.getElementById('pictureUrl').src = profile.pictureUrl;
+          document.getElementById('displayName').innerHTML =
+            profile.displayName;
+
+          user_profiles = profile;
+        })
+        .catch((err) => console.error(err));
+    }
+    liff.init(
+      { liffId: '2000217484-zay0pjQy' },
+      () => {
+        if (liff.isLoggedIn()) {
+          runApp();
+        } else {
+          liff.login();
+        }
+      },
+      (err) => console.error(err.code, error.message)
+    );
+
+    function handleSubmit(event) {
+      event.preventDefault(); // Prevent the form from submitting through the traditional way
+
+      // Get form data
+      const formData = {
+        firstName: document.getElementById('firstname').value,
+        lastName: document.getElementById('lastname').value,
+        email: document.getElementById('email').value,
+        section: document.getElementById('section').value,
+        description: document.getElementById('description').value,
+        userId: user_profiles.userId,
+        displayName: user_profiles.displayName,
+        pictureUrl: user_profiles.pictureUrl,
+      };
+
+      // Basic form validation (you can add more specific validations)
+      if (
+        !formData.firstName ||
+        !formData.lastName ||
+        !formData.email ||
+        !formData.section
+      ) {
+        Swal.fire(
+          'Oops...?',
+          'Please fill out all the fields before submitting.',
+          'question'
+        );
+        return;
+      }
+
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, submit it!',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: 'Uploading...',
+            html: 'Please wait...',
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+
+              // Make the API request
+              fetch(
+                'https://script.google.com/macros/s/AKfycbxK8OVbQf8Z8n70bbCx-DKL-OwN-lvuQYbU8Kmi3Bu_xZ6l7V7S8DazF4245NHaZzs3UA/exec',
+                {
+                  method: 'POST',
+                  body: JSON.stringify(formData),
+                }
+              )
+                .then((response) => response.json())
+                .then((data) => {
+                  // Handle the API response here if needed
+                  Swal.fire({
+                    title: 'Success',
+                    icon: 'success',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'ok',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      window.location.href = 'index.html';
+                    }
+                  });
+                })
+                .catch((error) => {
+                  console.error('Error submitting the form:', error);
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'An error occurred while submitting the form. Please try again later.',
+                  });
+                });
+            },
+          });
+        }
+      });
+    }
+
+    // Add event listener to the submit button
+    document.querySelector('.submit').addEventListener('click', handleSubmit);
+  </script>
+</html>
