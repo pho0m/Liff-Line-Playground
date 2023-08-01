@@ -251,3 +251,41 @@ body::-webkit-scrollbar {
 #dynamic-table button:hover {
   background-color: #c0392b;
 }
+
+.content-draw {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+#canvas {
+  border: 3px solid seagreen;
+  width: 560px;
+  height: 360px;
+}
+
+.submit-draw {
+  background-color: rgb(8, 228, 56);
+  border-radius: 12px;
+  border: 0;
+  box-sizing: border-box;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  font-size: 18px;
+  height: 50px;
+  text-align: center;
+  width: 200px;
+}
+
+.clear {
+  background-color: red;
+  border-radius: 12px;
+  border: 0;
+  box-sizing: border-box;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  font-size: 18px;
+  height: 50px;
+  text-align: center;
+  width: 200px;
+}

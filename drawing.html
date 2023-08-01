@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"
+    />
+    <title>Draw mouse with HTML</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://media.discordapp.net/attachments/1125648829862137916/1135189504391647292/Untitled_design_3.png"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="form">
+      <div class="content-draw">
+        <h1>Drawing with mouse Event</h1>
+        <canvas id="canvas" width="560" height="360"></canvas>
+        <div class="row">
+          <div><button class="submit-draw">Submit</button></div>
+          <div><button class="clear">Clear</button></div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script>
+    var user_profiles = {};
+
+    liff.init(
+      { liffId: '2000217484-43yoknRy' },
+      () => {
+        if (liff.isLoggedIn()) {
+          runApp();
+          console.log('in if');
+        } else {
+          console.log('in else');
+
+          liff.login();
+        }
+      },
+      (err) => console.error(err.code, error.message)
+    );
+
+    function runApp() {
+      liff
+        .getProfile()
+        .then((profile) => {
+          document.getElementById('pictureUrl').src = profile.pictureUrl;
+          document.getElementById('displayName').innerHTML =
+            profile.displayName;
+          document.getElementById('userId').innerHTML = profile.userId;
+
+          user_profiles = profile;
+        })
+        .catch((err) => console.error(err));
+    }
+
+    var x = 0;
+    var y = 0;
+    var isdrawing = false;
+    const cnv = document.getElementById('canvas');
+    const ctx = cnv.getContext('2d');
+    cnv.addEventListener('mousedown', (e) => {
+      x = e.offsetX;
+      y = e.offsetY;
+      isdrawing = true;
+    });
+    cnv.addEventListener('mousemove', (e) => {
+      if (isdrawing === true) {
+        drawLine(x, y, e.offsetX, e.offsetY);
+        x = e.offsetX;
+        y = e.offsetY;
+      }
+    });
+    cnv.addEventListener('mouseup', (e) => {
+      if (isdrawing === true) {
+        drawLine(x, y, e.offsetX, e.offsetY);
+        x = 0;
+        y = 0;
+        isdrawing = false;
+      }
+    });
+
+    function drawLine(x1, y1, x2, y2) {
+      ctx.beginPath();
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 1;
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    function handleClear(event) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function handleSubmit(event) {
+      const imageData = canvas.toDataURL(); // Get the data URI of the canvas
+      const blob = dataURLtoBlob(imageData); // Convert data URL to Blob
+
+      // Send the Blob to LINE Messaging API
+      const channelId = '2000217488';
+
+      liff
+        .getProfile()
+        .then((profile) => {
+          const userId = profile.userId; // Replace with the actual target user ID
+          console.log(userId);
+
+          const formData = new FormData();
+          formData.append('file', blob);
+
+          const proxyUrl = 'https://api.allorigins.win/raw?url=';
+
+          fetch(`${proxyUrl}https://api.line.me/v2/bot/message/push`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer niV7MZBXf0aMRHfjVsi0x2B2Rc3HNxl+B0Do8n2d2cD5g5jKf3xTgMiK7NcFPa6I6N6UIYn54F0BWbkxmQviG2hAhWzxqqwHhLCNUKE7CUtzH3dEoy2SDlh6axRtcE+vLduL6sU3nOkUCG8mQokdXAdB04t89/1O/w1cDnyilFU=`, // Replace with your actual channel access token
+            },
+            body: JSON.stringify({
+              to: userId,
+              messages: [
+                {
+                  type: 'image',
+                  originalContentUrl: URL.createObjectURL(blob),
+                  previewImageUrl: URL.createObjectURL(blob),
+                },
+              ],
+            }),
+          })
+            .then((response) => {
+              if (response.ok) {
+                console.log('Image sent successfully!');
+              } else {
+                console.error('Failed to send image. Status:', response.status);
+              }
+            })
+            .catch((error) => {
+              console.error('Error sending image:', error);
+            });
+        })
+        .catch((err) => console.error(err));
+    }
+
+    // Add event listener to the submit button
+    document
+      .querySelector('.submit-draw')
+      .addEventListener('click', handleSubmit);
+    document.querySelector('.clear').addEventListener('click', handleClear);
+
+    function dataURLtoBlob(dataURL) {
+      const byteString = atob(dataURL.split(',')[1]);
+      const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      return new Blob([ab], { type: mimeString });
+    }
+  </script>
+</html>
